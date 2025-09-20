@@ -253,8 +253,8 @@
         const apiKeyInput = el('#apikey');
         const messageDiv = el('#message');
         const params = new URLSearchParams(window.location.search);
-        const code = params.get('code');
-        const state = params.get('state');
+        // const code = params.get('code');
+        // const state = params.get('state');
         const redirect_uri = params.get('redirect_uri');
 
         function showMessage(txt, cls = '') { messageDiv.textContent = txt; messageDiv.className = 'msg ' + (cls ? cls : ''); }
@@ -283,7 +283,7 @@
             const endpoint = endpointInput.value.trim();
             const apiKey = apiKeyInput.value.trim();
             if (!isValidHttpsUrl(endpoint)) { showMessage('Please enter a valid HTTPS endpoint.', 'error'); return; }
-            if (!code || !state) { showMessage('Missing authorization. Please open from the Alexa app.', 'error'); return; }
+            // if (!code || !state) { showMessage('Missing authorization. Please open from the Alexa app.', 'error'); return; }
 
             showMessage('Saving configuration...');
             try {
