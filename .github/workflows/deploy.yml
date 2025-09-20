@@ -1,0 +1,46 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  # Runs on pushes to the main branch
+  push:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checks out your repository's code
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. This is the magic step: Find and replace placeholders with your secrets
+      - name: Replace Placeholders
+        run: |
+          sed -i 's|__SAVE_URL_ENDPOINT__|${{ secrets.SAVE_URL_ENDPOINT }}|g' index.html
+          sed -i 's|__TEST_ENDPOINT__|${{ secrets.TEST_ENDPOINT }}|g' index.html
+        # The 'sed' command edits the index.html file "in-place"
+        # It replaces the placeholder string with the secret value
+        
+      # 3. Sets up the GitHub Pages deployment
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 4. Uploads the MODIFIED index.html as a deployment artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      # 5. Deploys the artifact to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

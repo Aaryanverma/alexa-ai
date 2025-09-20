@@ -5,6 +5,9 @@ from cryptography.fernet import Fernet
 from fastapi import FastAPI, Request
 import uvicorn
 from pyngrok import ngrok  # or localtunnel
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class AlexaAI:
     def __init__(self, config_file="user_config.json", key_file="secret.key"):
