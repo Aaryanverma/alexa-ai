@@ -290,12 +290,13 @@
                 const r = await fetch(SAVE_URL_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ redirect_uri, endpoint, apiKey })
+                    body: JSON.stringify({ endpoint, apiKey })
                 });
                 const j = await r.json();
                 if (r.ok && j.ok) {
                     showMessage('✅ Saved! You can now close this window.', 'success');
-                    if (redirect_uri) setTimeout(() => window.location.href = `${redirect_uri}?state=${encodeURIComponent(state)}`, 1200);
+                    // if (redirect_uri) setTimeout(() => window.location.href = `${redirect_uri}?state=${encodeURIComponent(state)}`, 1200);
+                    if (redirect_uri) setTimeout(() => window.location.href = `${redirect_uri}`, 1200);
                 } else {
                     showMessage('Save failed: ' + (j.error || r.statusText), 'error');
                 }
