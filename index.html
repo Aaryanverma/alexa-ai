@@ -260,9 +260,9 @@
         function showMessage(txt, cls = '') { messageDiv.textContent = txt; messageDiv.className = 'msg ' + (cls ? cls : ''); }
         function isValidHttpsUrl(u) { try { const url = new URL(u); return url.protocol === 'https:' } catch (e) { return false } }
 
-        if (!code || !state) {
-            showMessage("Please open this page from the Alexa app's 'Configure' card.", "error");
-        }
+        // if (!code || !state) {
+        //     showMessage("Please open this page from the Alexa app's 'Configure' card.", "error");
+        // }
 
         document.getElementById('testBtn').addEventListener('click', async () => {
             const endpoint = endpointInput.value.trim();
