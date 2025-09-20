@@ -290,7 +290,7 @@
                 const r = await fetch(SAVE_URL_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code, state, redirect_uri, endpoint, apiKey })
+                    body: JSON.stringify({ redirect_uri, endpoint, apiKey })
                 });
                 const j = await r.json();
                 if (r.ok && j.ok) {
