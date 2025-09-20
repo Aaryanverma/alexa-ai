@@ -1,0 +1,5 @@
+cryptography==41.0.1
+fastapi==0.116.2
+pyngrok==5.2.3
+requests==2.31.0
+uvicorn==0.36.0

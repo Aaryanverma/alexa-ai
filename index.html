@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Alexa AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-solid: #6a63e3;
+            --primary-hover: #5a52d3;
+            --text-on-dark: #ffffff;
+            --text-dark: #212529;
+            --text-lead: #6c757d;
+            --text-light: #86909c;
+            --border-color: #dee2e6;
+            --input-focus-glow: rgba(106, 99, 227, 0.25);
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --shadow-color: rgba(102, 126, 234, 0.2);
+        }
+
+        /* General Body & Layout Styles */
+        body {
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Main Component Container */
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px var(--shadow-color);
+        }
+
+        /* Left Title Panel */
+        .title-panel {
+            background: var(--primary-gradient);
+            color: var(--text-on-dark);
+            padding: 40px;
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left;
+        }
+
+        .title-panel h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1.5px;
+        }
+
+        .title-panel p {
+            font-size: 18px;
+            margin: 12px 0 0;
+            opacity: 0.9;
+        }
+
+        /* Right Form Card */
+        .card {
+            background: var(--card-bg);
+            padding: 40px;
+            width: 55%;
+        }
+
+        .card h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0 0 8px;
+            text-align: left;
+        }
+
+        p.lead {
+            color: var(--text-lead);
+            margin: 0 0 24px;
+            font-size: 15px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        /* Form Elements */
+        form {
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        input[type=url],
+        input[type=password] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type=url]:focus,
+        input[type=password]:focus {
+            outline: none;
+            border-color: var(--primary-solid);
+            box-shadow: 0 0 0 4px var(--input-focus-glow);
+        }
+        
+        /* Button Styles */
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        button.primary {
+            background: var(--primary-solid);
+            color: #fff;
+            border: 1px solid var(--primary-solid);
+        }
+
+        button.primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        button.secondary {
+            background: var(--card-bg);
+            color: var(--primary-solid);
+            border: 1px solid var(--border-color);
+        }
+
+        button.secondary:hover {
+            border-color: var(--primary-solid);
+            color: var(--primary-solid);
+        }
+
+        /* Message & Footer */
+        .msg {
+            margin-top: 20px;
+            font-weight: 500;
+            font-size: 15px;
+            min-height: 1.5em; /* Prevent layout shift */
+            text-align: center;
+        }
+
+        .msg.success { color: var(--success-color); }
+        .msg.error { color: var(--error-color); }
+
+        footer.small {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 32px;
+            max-width: 900px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Responsive Design for smaller screens */
+        @media (max-width: 800px) {
+            .container {
+                flex-direction: column;
+                max-width: 500px;
+            }
+            .title-panel, .card {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .title-panel {
+                text-align: center;
+            }
+            .title-panel h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="title-panel">
+            <h1>ALEXA AI</h1>
+            <p>Made with ❤️ by Aaryan Verma</p>
+        </div>
+        <div class="card">
+            <div role="main">
+                <h2>Link your LLM Server</h2>
+                <p class="lead">Paste your public HTTPS endpoint. Optionally, add an API key if your provider requires it.</p>
+
+                <form id="configForm" autocomplete="off" novalidate>
+                    <label for="endpoint">Public LLM endpoint (HTTPS)</label>
+                    <input id="endpoint" name="endpoint" type="url" placeholder="https://abcd1234.ngrok-free.app" required
+                        pattern="https://.*">
+
+                    <label for="apikey">LLM API key (optional)</label>
+                    <input id="apikey" name="apikey" type="password" placeholder="sk-xxxx (leave blank if not needed)">
+
+                    <div class="button-row">
+                        <button type="button" id="testBtn" class="secondary">Test Connection</button>
+                        <button type="submit" id="saveBtn" class="primary">Save & Finish</button>
+                    </div>
+                    <div id="message" class="msg" role="status" aria-live="polite"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="small" style="border: 1px solid var(--primary-solid); border-radius: 12px; padding: 16px; margin: 32px auto; max-width: 900px;">
+        Privacy:<br> Your endpoint & API key are sent to our backend over TLS and stored encrypted using Amazon KMS. You can host this page on your own for any privacy concerns. This page should be opened from the Alexa app's skill linking card, which provides a secure authorization code needed for saving credentials.
+    </footer>
+
+    <script>
+        const SAVE_URL_ENDPOINT = "https://YOUR_API_GATEWAY/save-url";   // <--- replace
+        const TEST_ENDPOINT = "https://YOUR_API_GATEWAY/test-connection"; // <--- replace
+
+        const el = (s) => document.querySelector(s);
+        const endpointInput = el('#endpoint');
+        const apiKeyInput = el('#apikey');
+        const messageDiv = el('#message');
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        const state = params.get('state');
+        const redirect_uri = params.get('redirect_uri');
+
+        function showMessage(txt, cls = '') { messageDiv.textContent = txt; messageDiv.className = 'msg ' + (cls ? cls : ''); }
+        function isValidHttpsUrl(u) { try { const url = new URL(u); return url.protocol === 'https:' } catch (e) { return false } }
+
+        if (!code || !state) {
+            showMessage("Please open this page from the Alexa app's 'Configure' card.", "error");
+        }
+
+        document.getElementById('testBtn').addEventListener('click', async () => {
+            const endpoint = endpointInput.value.trim();
+            const apiKey = apiKeyInput.value.trim();
+            if (!isValidHttpsUrl(endpoint)) { showMessage('Endpoint must be a valid HTTPS url.', 'error'); return; }
+            showMessage('Testing connection...');
+            try {
+                const r = await fetch(TEST_ENDPOINT, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint, apiKey })
+                });
+                const j = await r.json();
+                if (r.ok && j.ok) showMessage('✅ Connection successful!', 'success'); else showMessage('Test failed: ' + (j.error || r.statusText), 'error');
+            } catch (err) { showMessage('Test failed: ' + err.message, 'error') }
+        });
+
+        document.getElementById('configForm').addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+            const endpoint = endpointInput.value.trim();
+            const apiKey = apiKeyInput.value.trim();
+            if (!isValidHttpsUrl(endpoint)) { showMessage('Please enter a valid HTTPS endpoint.', 'error'); return; }
+            if (!code || !state) { showMessage('Missing authorization. Please open from the Alexa app.', 'error'); return; }
+
+            showMessage('Saving configuration...');
+            try {
+                const r = await fetch(SAVE_URL_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, state, redirect_uri, endpoint, apiKey })
+                });
+                const j = await r.json();
+                if (r.ok && j.ok) {
+                    showMessage('✅ Saved! You can now close this window.', 'success');
+                    if (redirect_uri) setTimeout(() => window.location.href = `${redirect_uri}?state=${encodeURIComponent(state)}`, 1200);
+                } else {
+                    showMessage('Save failed: ' + (j.error || r.statusText), 'error');
+                }
+            } catch (err) { showMessage('Save failed: ' + err.message, 'error') }
+        });
+    </script>
+</body>
+
+</html>
