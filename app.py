@@ -32,8 +32,7 @@ except Exception as e:
     st.error(f"Failed to connect to the database: {e}\n\n Please check your credentials or try again later.")
     st.stop()
 
-with open(KEY_FILE, "rb") as f:
-    fernet = Fernet(f.read())
+fernet = Fernet(KEY_FILE)
 
 # Custom CSS to replicate the original design
 st.markdown("""
