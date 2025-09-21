@@ -207,7 +207,7 @@ with col3:
         
         endpoint = st.text_input(
         "LLM endpoint (HTTPS) :red[*]",
-        placeholder="https://abcd1234.ngrok-free.app",
+        placeholder="https://api.openai.com/v1/chat/completions",
         key="endpoint"
         )
     
@@ -241,7 +241,8 @@ with col3:
             else:
                 st.session_state.message = "Testing connection..."
                 st.session_state.message_type = "info"
-                success, msg = test_connection(endpoint.strip(), api_key.strip())
+                with st.spinner('Testing connection...'):
+                    success, msg = test_connection(endpoint.strip(), api_key.strip())
                 if success:
                     st.session_state.message = "✅ Connection successful!"
                     st.session_state.message_type = "success"
@@ -259,7 +260,8 @@ with col3:
             else:
                 st.session_state.message = "Saving configuration..."
                 st.session_state.message_type = "info"
-                success, msg = save_configuration(user_id, encrypted_url, encrypted_key)
+                with st.spinner('Saving configuration...'):
+                    success, msg = save_configuration(user_id, encrypted_url, encrypted_key)
                 if success:
                     st.session_state.message = f"✅ Saved! You can now close this window."
                     st.session_state.message_type = "success"
