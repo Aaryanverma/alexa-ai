@@ -206,9 +206,10 @@ with col3:
         """, unsafe_allow_html=True)
         
         endpoint = st.text_input(
-        "LLM endpoint (HTTPS) :red[*]",
-        placeholder="https://api.openai.com/v1/chat/completions",
-        key="endpoint"
+            "LLM endpoint :red[*] _(append model name at url end if needed)_",
+            placeholder="https://api.openai.com/v1/chat/completions/model_name=gpt-5",
+            key="endpoint",
+            help="Enter the HTTPS endpoint for your LLM API.",
         )
     
         api_key = st.text_input(
