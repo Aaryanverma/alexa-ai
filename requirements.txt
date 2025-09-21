@@ -4,5 +4,5 @@ pyngrok==5.2.3
 requests==2.31.0
 uvicorn==0.36.0
 python-dotenv
-"pymongo[srv]"
+pymongo[srv]
 streamlit_lottie
