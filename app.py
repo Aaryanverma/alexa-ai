@@ -26,13 +26,18 @@ lottie = load_lottieurl("alexa_ai.json")
 
 KEY_FILE = os.getenv("ENCRYPTION_KEY", "")
 
-try:
-    db_connection = DBCONNECTION()
-except Exception as e:
-    st.error(f"Failed to connect to the database: {e}\n\n Please check your credentials or try again later.")
-    st.stop()
+@st.cache_resource(show_spinner=False)
+def create_connection():
+    try:
+        db_connection = DBCONNECTION()
+        return db_connection
+    except Exception as e:
+        st.error(f"Failed to connect to the database: {e}\n\n Please check your credentials or try again later.")
+        st.stop()
 
-fernet = Fernet(KEY_FILE)
+with st.spinner('Connecting to database...'):
+    db_connection = create_connection()
+    fernet = Fernet(KEY_FILE)
 
 # Custom CSS to replicate the original design
 st.markdown("""
