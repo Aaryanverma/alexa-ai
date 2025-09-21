@@ -29,8 +29,12 @@ class DBCONNECTION:
             "endpoint": url,
             "api_key": key
         }
-        insert_id = self.collection.insert_one(data)
-        if insert_id:
+        result = self.collection.update_one(
+            {"user_id": user_id},
+            {"$set": data},
+            upsert=True
+        )
+        if result.upserted_id is not None:
             return True
         else:
             return False
