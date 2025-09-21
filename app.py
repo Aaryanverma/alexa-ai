@@ -4,8 +4,10 @@ from urllib.parse import urlparse
 from dotenv import load_dotenv
 from db_connection import DBCONNECTION
 import traceback
+from cryptography.fernet import Fernet
 from streamlit_lottie import st_lottie
 import json
+import os
 
 load_dotenv()
 
@@ -22,11 +24,16 @@ def load_lottieurl(path):
     
 lottie = load_lottieurl("alexa_ai.json")
 
+KEY_FILE = os.getenv("ENCRYPTION_KEY", "")
+
 try:
     db_connection = DBCONNECTION()
 except Exception as e:
     st.error(f"Failed to connect to the database: {e}\n\n Please check your credentials or try again later.")
     st.stop()
+
+with open(KEY_FILE, "rb") as f:
+    fernet = Fernet(f.read())
 
 # Custom CSS to replicate the original design
 st.markdown("""
@@ -154,6 +161,8 @@ def is_valid_https_url(url):
         return parsed.scheme == 'https'
     except:
         return False
+    
+user_id = st.query_params.get("user_id")
 
 def test_connection(endpoint = None, api_key = None):
     # Test connection by sending a GET request to the endpoint
@@ -205,6 +214,9 @@ with col3:
             key="api_key"
         )
 
+        encrypted_url = fernet.encrypt(endpoint.encode()).decode()
+        encrypted_key = fernet.encrypt(api_key.encode()).decode()
+
         # Every form must have a submit button.
         col_btn1, col_btn2 = st.columns(2)
         with col_btn1:
@@ -243,7 +255,7 @@ with col3:
             else:
                 st.session_state.message = "Saving configuration..."
                 st.session_state.message_type = "info"
-                success, msg = save_configuration(None, endpoint.strip(), api_key.strip())
+                success, msg = save_configuration(user_id, encrypted_url, encrypted_key)
                 if success:
                     st.session_state.message = f"✅ Saved! You can now close this window."
                     st.session_state.message_type = "success"
