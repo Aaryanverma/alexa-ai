@@ -4,7 +4,6 @@ import requests
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 from db_connection import DBCONNECTION
-from cryptography.fernet import Fernet
 from streamlit_lottie import st_lottie
 import json
 import os
@@ -26,22 +25,18 @@ def load_lottieurl(path):
     
 lottie = load_lottieurl("alexa_ai.json")
 
-# KEY_FILE = os.getenv("ENCRYPTION_KEY", "")
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
-
 secrets_client = boto3.client(
     'secretsmanager',
     region_name='us-east-1',
-    aws_access_key_id=AWS_ACCESS_KEY_ID,      
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    aws_access_key_id=os.getenv("aws_access_key_id"),
+    aws_secret_access_key=os.getenv("aws_secret_access_key")
 )
 
 kms_client = boto3.client(
     "kms", 
     region_name="us-east-1",
-    aws_access_key_id=AWS_ACCESS_KEY_ID,      
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    aws_access_key_id=os.getenv("aws_access_key_id"),
+    aws_secret_access_key=os.getenv("aws_secret_access_key")
 )
 
 def get_secret(secret_name):
@@ -49,9 +44,10 @@ def get_secret(secret_name):
     try:
         response = secrets_client.get_secret_value(SecretId="alexa-ai-secrets")
         secret = json.loads(response['SecretString'])[secret_name]
+        st.write(secret)
         return secret
     except ClientError as e:
-        st.error(f"Error retrieving secret {secret_name}: {e}")
+        st.error(f"Error retrieving secret {secret_name}:\n\n{e}")
         st.stop()
 
 def encrypt_data(data: str) -> str:
@@ -257,8 +253,6 @@ with col3:
 
         # encrypted_url = fernet.encrypt(endpoint.encode()).decode()
         # encrypted_key = fernet.encrypt(api_key.encode()).decode()
-        encrypted_url = encrypt_data(endpoint)
-        encrypted_key = encrypt_data(api_key)
         
         # Every form must have a submit button.
         col_btn1, col_btn2 = st.columns(2)
@@ -290,6 +284,7 @@ with col3:
                     st.session_state.message_type = "error"
         
         if save_btn:
+            
             if not endpoint.strip():
                 st.session_state.message = "Please enter a valid HTTPS endpoint."
                 st.session_state.message_type = "error"
@@ -297,6 +292,8 @@ with col3:
                 st.session_state.message = "Please enter a valid HTTPS endpoint."
                 st.session_state.message_type = "error"
             else:
+                encrypted_url = encrypt_data(endpoint)
+                encrypted_key = encrypt_data(api_key)
                 st.session_state.message = "Saving configuration..."
                 st.session_state.message_type = "info"
                 with st.spinner('Saving configuration...'):
