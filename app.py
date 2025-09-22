@@ -1,13 +1,15 @@
+import base64
 import streamlit as st
 import requests
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 from db_connection import DBCONNECTION
-import traceback
 from cryptography.fernet import Fernet
 from streamlit_lottie import st_lottie
 import json
 import os
+import boto3
+from botocore.exceptions import ClientError
 
 load_dotenv()
 
@@ -24,8 +26,41 @@ def load_lottieurl(path):
     
 lottie = load_lottieurl("alexa_ai.json")
 
-KEY_FILE = os.getenv("ENCRYPTION_KEY", "")
+# KEY_FILE = os.getenv("ENCRYPTION_KEY", "")
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
 
+secrets_client = boto3.client(
+    'secretsmanager',
+    region_name='us-east-1',
+    aws_access_key_id=AWS_ACCESS_KEY_ID,      
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+)
+
+kms_client = boto3.client(
+    "kms", 
+    region_name="us-east-1",
+    aws_access_key_id=AWS_ACCESS_KEY_ID,      
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+)
+
+def get_secret(secret_name):
+    """Retrieve secret from AWS Secrets Manager with caching."""
+    try:
+        response = secrets_client.get_secret_value(SecretId="alexa-ai-secrets")
+        secret = json.loads(response['SecretString'])[secret_name]
+        return secret
+    except ClientError as e:
+        st.error(f"Error retrieving secret {secret_name}: {e}")
+        st.stop()
+
+def encrypt_data(data: str) -> str:
+    response = kms_client.encrypt(
+        KeyId=KMS_KEY_ID,
+        Plaintext=data.encode("utf-8")
+    )
+    return base64.b64encode(response["CiphertextBlob"]).decode("utf-8")
+    
 @st.cache_resource(show_spinner=False)
 def create_connection():
     try:
@@ -37,7 +72,8 @@ def create_connection():
 
 with st.spinner('Connecting to database...'):
     db_connection = create_connection()
-    fernet = Fernet(KEY_FILE)
+    KMS_KEY_ID = get_secret("KMS_KEY_ID")
+    # fernet = Fernet(KEY_FILE)
 
 # Custom CSS to replicate the original design
 st.markdown("""
@@ -219,9 +255,11 @@ with col3:
             key="api_key"
         )
 
-        encrypted_url = fernet.encrypt(endpoint.encode()).decode()
-        encrypted_key = fernet.encrypt(api_key.encode()).decode()
-
+        # encrypted_url = fernet.encrypt(endpoint.encode()).decode()
+        # encrypted_key = fernet.encrypt(api_key.encode()).decode()
+        encrypted_url = encrypt_data(endpoint)
+        encrypted_key = encrypt_data(api_key)
+        
         # Every form must have a submit button.
         col_btn1, col_btn2 = st.columns(2)
         with col_btn1:

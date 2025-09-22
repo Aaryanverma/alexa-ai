@@ -34,7 +34,7 @@ class DBCONNECTION:
             {"$set": data},
             upsert=True
         )
-        if result.upserted_id is not None:
+        if result.upserted_id:
             return True
         else:
             return False
