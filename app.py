@@ -1,4 +1,5 @@
 import base64
+from openai import OpenAI
 import streamlit as st
 import requests
 from urllib.parse import urlparse
@@ -69,9 +70,8 @@ def create_connection():
 with st.spinner('Connecting to database...'):
     db_connection = create_connection()
     KMS_KEY_ID = get_secret("KMS_KEY_ID")
-    # fernet = Fernet(KEY_FILE)
 
-# Custom CSS to replicate the original design
+# Custom CSS
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -201,18 +201,47 @@ def is_valid_https_url(url):
 user_id = st.query_params.get("user_id")
 
 def test_connection(endpoint = None, api_key = None):
-    # Test connection by sending a GET request to the endpoint
+    """Test connection with user's credentials."""
     try:
-        headers = {'Authorization': f'Bearer {api_key}'} if api_key else None
-        response = requests.get(endpoint, headers=headers, timeout=10)
-        if response.status_code == 200:
-            return True, "Connection successful!"
+
+        model_name = None
+        
+        # Check if model name is specified in the URL
+        if '/model_name=' in endpoint:
+            parts = endpoint.split('/model_name=')
+            api_endpoint = parts[0].strip()
+            model_name = parts[1].strip() if len(parts) > 1 else None
+        
+        client = OpenAI(
+            api_key=api_key,
+            base_url=api_endpoint,
+            timeout=10.0
+        )
+        
+        payload = {
+            "messages": [
+                {"role": "user", "content": "Hi"}
+            ],
+            "max_tokens": 100,
+            "temperature": 0.1,
+            "top_p": 1.0
+        }
+        
+        # Add model name if specified
+        if model_name and model_name != "":
+            payload["model"] = model_name
+        
+        result = client.chat.completions.create(**payload)
+        
+        if hasattr(result, 'choices') and len(result.choices) > 0:
+            return True, result.choices[0].message.content.strip()
+        elif hasattr(result, 'response'):
+            return True, result.response.strip()
         else:
-            return False, f"Server returned status code: {response.status_code}"
-    except requests.exceptions.RequestException as e:
-        return False, f"Connection error: {str(e)}"
+            return False, "Sorry, I couldn't get a response from your LLM service. Pls check your credentials or try again later."
+            
     except Exception as e:
-        return False, str(e)
+        return False, "Sorry, I encountered an error while processing your request. Pls check your credentials or try again later."
 
 def save_configuration(user_id = None, endpoint = None, api_key = None):
     try:

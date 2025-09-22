@@ -7,3 +7,4 @@ python-dotenv
 pymongo[srv]
 streamlit_lottie
 boto3
+openai
