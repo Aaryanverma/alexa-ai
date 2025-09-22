@@ -6,3 +6,4 @@ uvicorn==0.36.0
 python-dotenv
 pymongo[srv]
 streamlit_lottie
+boto3
