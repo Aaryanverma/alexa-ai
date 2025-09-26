@@ -16,7 +16,7 @@ load_dotenv()
 
 # Page config
 st.set_page_config(
-    page_title="Alexa AI",
+    page_title="AI Server",
     page_icon="🤖",
     layout="wide"
 )
@@ -64,7 +64,6 @@ def create_connection():
 
 with st.spinner('Connecting to database...'):
     db_connection = create_connection()
-    KMS_KEY_ID = get_secret("KMS_KEY_ID")
 
 # Custom CSS
 st.markdown("""
@@ -258,7 +257,7 @@ with col2:
 with col3:
     with st.form("my_form"):
         st.markdown("""
-        <h1 align=center class='gradient-text'>ALEXA AI</h1>
+        <h1 align=center class='gradient-text'>AI Server</h1>
         """, unsafe_allow_html=True)
         
         endpoint = st.text_input(
