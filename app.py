@@ -10,6 +10,7 @@ import json
 import os
 import boto3
 from botocore.exceptions import ClientError
+from cryptography.fernet import Fernet
 
 load_dotenv()
 
@@ -32,13 +33,8 @@ secrets_client = boto3.client(
     aws_access_key_id=os.getenv("aws_access_key_id"),
     aws_secret_access_key=os.getenv("aws_secret_access_key")
 )
-
-kms_client = boto3.client(
-    "kms", 
-    region_name="us-east-1",
-    aws_access_key_id=os.getenv("aws_access_key_id"),
-    aws_secret_access_key=os.getenv("aws_secret_access_key")
-)
+KEY_ID = os.getenv("ENCRYPTION_KEY")
+fernet_client = Fernet(KEY_ID)
 
 def get_secret(secret_name):
     """Retrieve secret from AWS Secrets Manager with caching."""
@@ -52,11 +48,10 @@ def get_secret(secret_name):
         st.stop()
 
 def encrypt_data(data: str) -> str:
-    response = kms_client.encrypt(
-        KeyId=KMS_KEY_ID,
-        Plaintext=data.encode("utf-8")
+    response = fernet_client.encrypt(
+        data.encode("utf-8")
     )
-    return base64.b64encode(response["CiphertextBlob"]).decode("utf-8")
+    return response.decode("utf-8")
     
 @st.cache_resource(show_spinner=False)
 def create_connection():
